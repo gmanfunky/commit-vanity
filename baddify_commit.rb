@@ -5,7 +5,7 @@
 require 'digest'
 require 'time'
 
-# Building data for hashing like:
+# Example commit data for hashing
 #
 # data = """commit 229\0tree fc4ed2ce3d4f35ee0c019e953aea91c775bb50a6
 # parent baddcd5a88ad9882ee2ed6a9e4e0379db9c44e16
@@ -14,9 +14,12 @@ require 'time'
 
 # bad empty commit
 # """
-
 # > sha1 = Digest::SHA1.new << data
 # => #<Digest::SHA1: bad83c74495d6f0398b3ed66bcca309cec3e1878>
+
+desired_prefix = ARGV[0] ? ARGV[0] : '31337' # <2 seconds
+initial_hash = `git rev-parse HEAD`
+exit(0) if initial_hash.start_with?(desired_prefix)
 
 commit_data = `git cat-file commit HEAD`
 print "\n"
@@ -37,8 +40,6 @@ committer_timedelta = committer.split(' ')[-1]
 
 candidate_string, candidate_hash = [nil] * 2
 sha1 = Digest::SHA1.new
-target_prefix = '31337' # <2 seconds
-# target_prefix = 'decafbad' # <2.25 hours?
 
 begin_time = Time.now
 
@@ -52,16 +53,16 @@ loop do
 #{message}"
   candidate_hash = sha1.hexdigest(candidate_string)
   # print "Candidate Hash: #{candidate_hash}\n"
-  break if candidate_hash.start_with?(target_prefix)
+  break if candidate_hash.start_with?(desired_prefix)
 end
 
 print "Processed #{author_seconds - committer_seconds} hashes in #{Time.now - begin_time} seconds.\n"
 print "\n"
-print "Target Hash: #{candidate_hash}\n"
+print "Target Hash is #{candidate_hash}\n"
 print "For Commit String: #{candidate_string}\n"
 
-print "press any key to commit to git\n"
-gets
+# print "press any key to commit to git\n"
+# gets
 
 ENV['GIT_COMMITTER_DATE'] = "#{committer_seconds} #{committer_timedelta}"
-`git commit --amend --no-edit --date="#{author_seconds}"`
+`git commit --no-verify --allow-empty-message --amend --no-edit --date="#{author_seconds}"`
