@@ -55,7 +55,6 @@ loop do
   # print "Candidate Hash: #{candidate_hash}\n"
   break if candidate_hash.start_with?(desired_prefix)
 end
-
 print "Processed #{author_seconds - committer_seconds} hashes in #{Time.now - begin_time} seconds.\n"
 print "\n"
 print "Target Hash is #{candidate_hash}\n"
