@@ -18,10 +18,13 @@
 # (printf "commit %s\0" $(git cat-file commit HEAD | wc -c); git cat-file commit HEAD) |sha1sum.exe
 # (printf "commit %s\0" $(git cat-file commit HEAD | wc -c); IFS=; printf "%s\n" $(git cat-file commit HEAD))|sha1sum.exe
 
+
+# Get the current HEAD details to be hashe
 prefix=$(printf "commit %s\0" $(git cat-file commit HEAD | wc -c))
-cat_file_head=$(git cat-file commit HEAD)
+# cat_file_head=$(git cat-file commit HEAD)
 # (printf "%s\0%s\n" "$(echo "$prefix")" "$(echo "$cat_file_head")" ) |sha1sum.exe
 
+# (╥﹏╥) Don't let your friends  use arrays in shell scripts. (╥﹏╥)
 my_array=()
 while IFS= read -r line; do
     my_array+=( "$line" )
@@ -37,8 +40,6 @@ msg=$(IFS=; printf "%s\n" "${my_array[@]:5}")  # Crazy thing to grab rest of lin
 # Following was verified to have expected sha1sum
 # printf '%s\0%s\n%s\n%s\n%s\n%s\n%s\n%s' "$prefix" "${tree}" "${parent}" "${author}" "${committer}" "${empty}" "${msg}"
 
-# TODO: here we can assert that our calculation matches the last git commit
-
 # get all but last two fields and trim trailing spaces
 committer_prefix=$(echo ${committer} | awk '{$NF=""; $(NF-1)=""; print $0'} | awk '{$1=$1;print}') 
 author_timestamp=$(echo ${author} | awk '{print $(NF-1)}')
@@ -50,6 +51,7 @@ new_committer="$author_prefix $committer_timestamp $committer_timedelta"
 
 potential_body="$(printf '%s\n%s\n%s\n%s\n%s\n%s\n%s\n' "${tree}" "${parent}" "${author}" "${committer}" "${empty}" "${msg}")"
 hash=$((printf "%s\0%s\n" "$(echo "$prefix")" "$(echo "$potential_body")" ) |sha1sum.exe)
+# TODO(Gabe): Fixup data and assert that the below comparison matches. 
 echo "$hash should match $(git log | head -1)"
 
 until echo $hash | grep "^bad"
@@ -65,12 +67,14 @@ echo "$potential_body"
 
 GIT_COMMITTER_DATE="$committer_timestamp $committer_timedelta" git commit --amend --no-edit --date="$author_timestamp"
 
+
+# The SUPER slow way to brute force this
 # branch=$(git rev-parse --abbrev-ref HEAD)
 
 # n=0
 # until git commit --amend --no-edit --verbose | grep "$branch bad"
 # do
 #   let n=n+1
-#   sleep 0.9 # hash changes every second? Sucks. will take 1-68 minutes. :-(
+#   sleep 0.9 # hash changes every second? Sucks. May take 1-68 minutes. :-(
 #   echo $n
 # done
