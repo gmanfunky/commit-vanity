@@ -1,5 +1,53 @@
 A test repo for screwing with git commit IDs
 
+## baddify-commit.sh ##
+![Sample Commit History](_pics/bad-github-history.png)
+
+### Usage ###
+```console
+$ git add baddify-commit.sh
+
+$ git commit -m "bad update for a little more readability"
+[master 636e681] bad update for a little more readability
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+ $ time ./baddify-commit.sh
+ 636e681e054636de71b505fc7d0522d29f885a63 *- should match commit 636e681e054636de71b505fc7d0522d29f885a63
+ ea6575247acf28bc04059aa07d9f2b3b0c180783 *-
+ f0828001e0dd215e7463ed7872cef538dc2c1229 *-
+
+ ...snip lots more candidate hashes...
+
+ b176d90259b0e8d9bb11a24c670fb47328aadbba *-
+ bad82daf8384b3a7cb0b653deb6c62034fa28d1b *-
+ bad82daf8384b3a7cb0b653deb6c62034fa28d1b *-
+ tree 055d899758f34735627029b73e9f6c7749c572e8
+ parent bade388bfb10cfc6b7209cc1bc4556218ce5ca7d
+ author Gabe Funky <gabriel@gsource.org> 1525907162 -0700
+ committer Gabe Funky <gabriel@gsource.org> 1525907734 -0700
+
+ bad update for a little more readability
+ [master bad82da] bad update for a little more readability
+  Date: Wed May 9 16:06:02 2018 -0700
+   1 file changed, 8 insertions(+), 4 deletions(-)
+
+   real    0m40.599s
+   user    0m13.002s
+   sys     0m32.738s
+
+
+   $ git push
+   Counting objects: 3, done.
+   Delta compression using up to 8 threads.
+   Compressing objects: 100% (3/3), done.
+   Writing objects: 100% (3/3), 578 bytes | 578.00 KiB/s, done.
+   Total 3 (delta 1), reused 0 (delta 0)
+   remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+   To https://github.com/gmanfunky/commit-vanity.git
+      bad1388..bad82da  master -> master
+
+```
+
 ## Questions ##
 - Can i add or remove files of various whitespace to calculate different pretty git commit SHA1?
 - Can i add history before first null commit 000000000000
