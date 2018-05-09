@@ -12,6 +12,9 @@ A test repo for screwing with git commit IDs
 - Generate and edit file directly? Read last commit, loop making new ones until ready to replace log
 - Maybe munge author (not committer) details. Author timestamp seems most malleable.
 - What happens on github is timezone is not recognized (e.g., +0111 or +0199 _gnarly!_)
+  - for invalid offsets 60+ minutes, it seems git commandline will default to commit time
+  - Github seems to auto-fixup author date, and ignore committer date when displaying commit details. \
+  so have fun with the commit time?
 - Stretch - "fixup" after a rebase changes all the commits. (e.g., `baddify-commits.sh HEAD^4`)
 
 ## Quick Math ##
