@@ -1,13 +1,16 @@
 A test repo for screwing with git commit IDs
 
 ## baddify_commit.rb ##
+![Falafel Commit History](_pics/falafel-github-history.png)
 ![Sample Commit History](_pics/bad-github-history.png)
 
 ### Usage ###
 ```console
+
 $ git add baddify-commit.sh
 $ git commit -m "bad update for a little more readability"
 
+$ ruby baddify_commit.rb bad
 
    $ git push
    Counting objects: 3, done.
@@ -21,9 +24,20 @@ $ git commit -m "bad update for a little more readability"
 
 ```
 
+Optionally use as a git hook
+```shell
+$ cp baddify_commit.rb .git/hooks/post-commit
+```
+
+### Performance ###
+The ruby script is much more performant than the `.sh`. 
+
+A chosen 5-hex-character desired prefix (e.g., `31337`) may only take a couple seconds to complete. For a longer prefix, multiply this by 16 for each additional character to get rough idea of how long it might take to complete. 
+
 ## Questions ##
-- [ ] Can i add history before first null commit 000000000000
+- [ ] Can i add history before first null commit 000000000000 ?
 - [ ] Stretch - Be able to "fixup" after a rebase. Changes all the commits to target. (e.g., `baddify-commits.sh HEAD^4`)
+- [ ] Merge commits can have two parents. `gpgsig` after `committer` before message. Can we handle this? Can we achieve commit-vanity using additional bullshit parent commit?
 - ~~[ ] Are there usable git libraries call quickly?~~ 
 - [x] Can I add or remove files or various whitespace to calculate different pretty git commit SHA1?
 - ~~Maybe use tons of file move commands to generate new commits? ~~
